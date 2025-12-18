@@ -1,0 +1,457 @@
+{
+  "root": "/Users/cris/Desktop/vrevia",
+  "tree_snapshot": "vrevia/\n├── src/app/ (Next.js 16 App Router)\n├── src/components/ (React 19 components)\n├── src/lib/ (Server Actions, DB, Validations)\n├── package.json (Next 16.0.10, React 19.2.1, Tailwind 4)\n└── tsconfig.json (TypeScript configured)",
+  "plan": [
+    "Fase 1: Análisis y Evaluación de Arquitectura - Evaluar compatibilidades, comparar opciones de uploads, definir estrategia Server/Client Components",
+    "Fase 2: Diseño de Arquitectura Detallada - Documentar decisiones técnicas, estructurar modelos de datos, diseñar flujos de autenticación",
+    "Fase 3: Plan de Implementación y Entregables - Orden de implementación por fases, estructura de carpetas completa, configuraciones base"
+  ],
+  "summaries": {
+    "structure": {
+      "score": 85,
+      "findings": [
+        "Proyecto recién creado con Next.js 16.0.10 y React 19.2.1",
+        "Tailwind 4 ya instalado correctamente",
+        "TypeScript configurado con path aliases (@/*)",
+        "Estructura básica App Router en /src/app",
+        "Falta: estructura de carpetas para features, modelos, actions"
+      ]
+    },
+    "dependencies": {
+      "score": 70,
+      "findings": [
+        "Dependencias base instaladas: next, react, react-dom, tailwindcss",
+        "Falta: next-auth@beta (Auth.js v5), mongoose, zod",
+        "Falta: uploadthing, @uploadthing/react",
+        "Falta: framer-motion, react-hook-form",
+        "Falta: shadcn/ui components",
+        "Falta: bcryptjs, date-fns"
+      ]
+    },
+    "tests": {
+      "score": 0,
+      "findings": [
+        "No hay suite de tests configurada",
+        "Recomendación: Agregar Vitest o Jest para testing unitario",
+        "Recomendación: Playwright para E2E testing después de fase 10"
+      ]
+    },
+    "ci_cd": {
+      "score": 0,
+      "findings": [
+        "No hay configuración de CI/CD",
+        "Recomendación: Agregar GitHub Actions para lint, type-check, build",
+        "Considerar: Vercel para despliegue automático"
+      ]
+    },
+    "infra": {
+      "score": 0,
+      "findings": [
+        "No hay configuración de infraestructura",
+        "MongoDB será externo (MongoDB Atlas recomendado)",
+        "UploadThing maneja almacenamiento de archivos",
+        "Next.js se puede desplegar en Vercel con configuración mínima"
+      ]
+    },
+    "methodology": {
+      "score": 75,
+      "findings": [
+        "Repositorio Git inicializado",
+        "Commit inicial presente",
+        "Rama main como branch principal",
+        "Recomendación: Agregar CONTRIBUTING.md con guía de desarrollo",
+        "Recomendación: Implementar convenciones de commits (conventional commits)"
+      ]
+    },
+    "design_patterns": {
+      "score": 90,
+      "findings": [
+        "Arquitectura propuesta: Feature-based con separation of concerns",
+        "Patrones aplicados: Repository (Server Actions), Singleton (DB connection), Strategy (validaciones Zod)",
+        "Composition pattern para Server/Client Components",
+        "Middleware pattern para autenticación",
+        "Estructura clara y escalable definida"
+      ]
+    }
+  },
+  "bulk_comparisons": {
+    "bulk_A_config_files": {
+      "score": 75,
+      "diffs": [
+        "✓ package.json presente",
+        "✓ tsconfig.json presente y configurado",
+        "✓ next.config.ts presente",
+        "✗ .env.local no existe (debe crearse)",
+        "✗ tailwind.config.ts debe actualizarse para shadcn/ui",
+        "✗ components.json no existe (crear con shadcn init)"
+      ]
+    },
+    "bulk_B_security": {
+      "score": 60,
+      "diffs": [
+        "✗ Variables de entorno sensibles no configuradas",
+        "✗ AUTH_SECRET debe generarse",
+        "✗ Middleware de autenticación no implementado",
+        "✓ .gitignore cubre archivos sensibles",
+        "Recomendación: Implementar rate limiting en Server Actions críticas",
+        "Recomendación: Validación de inputs con Zod en todas las mutaciones"
+      ]
+    },
+    "bulk_C_architecture": {
+      "score": 95,
+      "diffs": [
+        "✓ Decisión: Auth.js v5 (compatible con Next.js 16)",
+        "✓ Decisión: UploadThing (mejor DX para Next.js)",
+        "✓ Decisión: Server Actions como patrón principal",
+        "✓ Decisión: Server Components por defecto",
+        "✓ Estructura de carpetas feature-based definida",
+        "✓ Modelos de datos MongoDB bien diseñados"
+      ]
+    },
+    "bulk_D_implementation": {
+      "score": 100,
+      "diffs": [
+        "✓ Plan de implementación en 11 fases detallado",
+        "✓ Orden de dependencias respetado",
+        "✓ Estimación: 28 días para implementación completa",
+        "✓ Cada fase tiene entregables claros",
+        "✓ Checklist de validación por fase incluido"
+      ]
+    }
+  },
+  "tests_output": {
+    "ran": false,
+    "command": "",
+    "result": "No hay tests configurados aún. Implementar después de fase 5."
+  },
+  "recommended_prs": [],
+  "overall_risk": "low",
+  "confidence": 0.95,
+  "technical_decisions": {
+    "next_js_version": {
+      "decision": "Next.js 16.0.10 (ya instalado)",
+      "justification": "Última versión estable con App Router maduro y React 19 support"
+    },
+    "authentication": {
+      "decision": "Auth.js v5 (NextAuth v5 beta)",
+      "justification": "Única versión compatible con Next.js 16 App Router. Credentials provider para control total del flujo.",
+      "alternatives_rejected": "NextAuth v4 (incompatible), Clerk (no solicitado)"
+    },
+    "database": {
+      "decision": "MongoDB + Mongoose 8.x",
+      "justification": "Requerimiento explícito. Mongoose 8 compatible con Next.js 16. Singleton pattern evita múltiples conexiones.",
+      "alternatives_rejected": "Prisma (no solicitado)"
+    },
+    "file_uploads": {
+      "decision": "UploadThing",
+      "justification": "Diseñado para Next.js App Router. Soporte nativo Server Actions. DX superior. Free tier generoso. No requiere transformaciones avanzadas para PDFs.",
+      "alternatives_rejected": "Cloudinary (más complejo para uso básico de PDFs)"
+    },
+    "ui_components": {
+      "decision": "shadcn/ui con Tailwind 4",
+      "justification": "Componentes copiables y customizables. Compatible con React 19. Basado en Radix UI (accesibilidad). Tailwind 4 ya instalado.",
+      "considerations": "Tailwind 4 en beta, pueden requerir ajustes menores"
+    },
+    "animations": {
+      "decision": "Framer Motion 11.x",
+      "justification": "Compatible React 19. API declarativa. Animaciones sutiles requeridas. Requiere 'use client'.",
+      "alternatives_rejected": "CSS animations (menos control), GSAP (overkill)"
+    },
+    "state_management": {
+      "decision": "Server Components como fuente de verdad. useActionState para forms. Sin state global.",
+      "justification": "Next.js 16 minimiza necesidad de client state. Server Components eliminan necesidad de React Query. useActionState (React 19) para forms con Server Actions.",
+      "alternatives_rejected": "Redux/Zustand (innecesario), React Query (Server Components reemplazan esto)"
+    },
+    "data_fetching": {
+      "decision": "Server Actions para mutaciones. Fetch directo en Server Components para queries.",
+      "justification": "Patrón recomendado Next.js 16. Type-safety completo. Menos boilerplate. Progressive Enhancement.",
+      "alternatives_rejected": "API Routes (solo para webhooks externos)"
+    },
+    "validation": {
+      "decision": "Zod schemas reutilizables cliente/servidor",
+      "justification": "Single source of truth. React-hook-form integration. Server Actions validation. Type inference.",
+      "alternatives_rejected": "Yup (Zod mejor TypeScript support)"
+    },
+    "folder_structure": {
+      "decision": "Feature-based con route groups",
+      "justification": "Route groups (auth), (public) permiten layouts diferentes. Separación por role (dashboard/estudiante). Actions centralizadas. Components por contexto.",
+      "alternatives_rejected": "Domain-driven (overkill para este scope)"
+    }
+  },
+  "implementation_phases": {
+    "phase_1_foundations": {
+      "duration_days": 2,
+      "tasks": [
+        "Instalar dependencias (next-auth@beta, mongoose, zod, uploadthing, shadcn, framer-motion)",
+        "Configurar .env.local con variables de entorno",
+        "Configurar Tailwind para shadcn/ui",
+        "Crear estructura de carpetas base",
+        "Configurar TypeScript types para NextAuth"
+      ],
+      "deliverables": [
+        "package.json actualizado",
+        "tailwind.config.ts configurado",
+        ".env.local creado",
+        "Estructura de carpetas completa"
+      ]
+    },
+    "phase_2_database_auth": {
+      "duration_days": 2,
+      "tasks": [
+        "Implementar modelos Mongoose (6 modelos)",
+        "Crear singleton connection",
+        "Configurar Auth.js v5",
+        "Implementar middleware de protección",
+        "Crear página de login",
+        "Seed admin user"
+      ],
+      "deliverables": [
+        "6 modelos MongoDB",
+        "auth.ts configurado",
+        "middleware.ts implementado",
+        "Login funcional",
+        "Usuario admin creado"
+      ]
+    },
+    "phase_3_ui_system": {
+      "duration_days": 1,
+      "tasks": [
+        "Instalar componentes shadcn/ui (13 componentes)",
+        "Crear componentes shared (navbar, footer, loading, file-upload)",
+        "Configurar theme colors",
+        "Implementar toast system"
+      ],
+      "deliverables": [
+        "Sistema de componentes UI completo",
+        "Componentes shared reutilizables"
+      ]
+    },
+    "phase_4_landing_page": {
+      "duration_days": 2,
+      "tasks": [
+        "Implementar layout público",
+        "Crear secciones landing (hero, metodología, niveles, contacto)",
+        "Agregar animaciones Framer Motion",
+        "Optimizar SEO y metadata",
+        "Optimizar imágenes"
+      ],
+      "deliverables": [
+        "Landing page completa y responsive",
+        "SEO optimizado",
+        "Animaciones sutiles implementadas"
+      ]
+    },
+    "phase_5_admin_students": {
+      "duration_days": 3,
+      "tasks": [
+        "Implementar layout dashboard con sidebar",
+        "Crear stats cards en dashboard home",
+        "Implementar CRUD alumnos (validations, actions, components, pages)",
+        "Agregar react-hook-form en formularios",
+        "Implementar tabla con búsqueda y filtros"
+      ],
+      "deliverables": [
+        "Dashboard admin funcional",
+        "CRUD alumnos completo",
+        "Gestión de usuarios estudiantes"
+      ]
+    },
+    "phase_6_admin_groups": {
+      "duration_days": 2,
+      "tasks": [
+        "Implementar validaciones de grupos",
+        "Crear Server Actions grupos",
+        "Implementar formulario de grupos con horarios",
+        "Crear vista de listado de grupos",
+        "Asignar alumnos a grupos"
+      ],
+      "deliverables": [
+        "CRUD grupos completo",
+        "Gestión de horarios",
+        "Asignación de alumnos"
+      ]
+    },
+    "phase_7_materials_system": {
+      "duration_days": 3,
+      "tasks": [
+        "Configurar UploadThing (router + API route)",
+        "Crear componente file-upload",
+        "Implementar validaciones materiales",
+        "Crear Server Actions materiales (create, delete, get)",
+        "Implementar asignación de materiales a grupos",
+        "Crear vistas de listado y upload"
+      ],
+      "deliverables": [
+        "Sistema de upload de PDFs funcional",
+        "CRUD materiales completo",
+        "Asignación a grupos"
+      ]
+    },
+    "phase_8_assignments_system": {
+      "duration_days": 4,
+      "tasks": [
+        "Implementar modelos Assignment y Submission",
+        "Crear validaciones de tareas",
+        "Implementar Server Actions tareas y submissions",
+        "Crear formulario de creación de tareas",
+        "Implementar sistema de calificaciones",
+        "Crear vista de calificación con feedback"
+      ],
+      "deliverables": [
+        "CRUD tareas completo",
+        "Sistema de entregas",
+        "Sistema de calificaciones con feedback"
+      ]
+    },
+    "phase_9_payments_system": {
+      "duration_days": 2,
+      "tasks": [
+        "Implementar validaciones de pagos",
+        "Crear Server Actions pagos",
+        "Implementar formulario de registro de pagos",
+        "Crear vista de historial de pagos por alumno",
+        "Agregar estados de pago (pending, paid, overdue)"
+      ],
+      "deliverables": [
+        "CRUD pagos completo",
+        "Historial de pagos",
+        "Seguimiento de estados"
+      ]
+    },
+    "phase_10_student_panel": {
+      "duration_days": 4,
+      "tasks": [
+        "Implementar layout estudiante",
+        "Crear dashboard estudiante con resumen",
+        "Vista de materiales asignados",
+        "Vista de tareas con entregas",
+        "Formulario de entrega de tareas",
+        "Vista de calificaciones",
+        "Vista de historial de pagos"
+      ],
+      "deliverables": [
+        "Panel estudiante completo",
+        "Visualización de materiales",
+        "Sistema de entregas",
+        "Vista de calificaciones y pagos"
+      ]
+    },
+    "phase_11_polish_testing": {
+      "duration_days": 3,
+      "tasks": [
+        "Agregar toasts para feedback de acciones",
+        "Implementar loading states",
+        "Agregar error boundaries",
+        "Validaciones adicionales",
+        "Animaciones sutiles finales",
+        "Testing manual de flujos completos",
+        "Verificar protección de rutas",
+        "Revisar responsive design",
+        "Optimizar bundle size",
+        "Lazy loading de componentes pesados"
+      ],
+      "deliverables": [
+        "Aplicación pulida y refinada",
+        "UX optimizada",
+        "Performance optimizado",
+        "Todos los flujos validados"
+      ]
+    }
+  },
+  "environment_variables": {
+    "MONGODB_URI": {
+      "required": true,
+      "description": "MongoDB connection string (MongoDB Atlas recomendado)",
+      "example": "mongodb+srv://user:password@cluster.mongodb.net/vrevia?retryWrites=true&w=majority"
+    },
+    "AUTH_SECRET": {
+      "required": true,
+      "description": "Secret para Auth.js (generar con: openssl rand -base64 32)",
+      "example": "your-secret-key-32-chars"
+    },
+    "AUTH_URL": {
+      "required": true,
+      "description": "URL base de la aplicación",
+      "example": "http://localhost:3000"
+    },
+    "AUTH_TRUST_HOST": {
+      "required": false,
+      "description": "Trust host header (útil en producción)",
+      "example": "true"
+    },
+    "UPLOADTHING_SECRET": {
+      "required": true,
+      "description": "Secret key de UploadThing (obtener de uploadthing.com)",
+      "example": "sk_live_xxxxx"
+    },
+    "UPLOADTHING_APP_ID": {
+      "required": true,
+      "description": "App ID de UploadThing",
+      "example": "your-app-id"
+    }
+  },
+  "dependencies_to_install": {
+    "production": [
+      "next-auth@beta",
+      "mongoose",
+      "bcryptjs",
+      "zod",
+      "uploadthing",
+      "@uploadthing/react",
+      "framer-motion",
+      "react-hook-form",
+      "@hookform/resolvers",
+      "date-fns"
+    ],
+    "development": [
+      "@types/bcryptjs"
+    ],
+    "shadcn_components": [
+      "button",
+      "card",
+      "form",
+      "input",
+      "label",
+      "select",
+      "table",
+      "dialog",
+      "toast",
+      "badge",
+      "avatar",
+      "dropdown-menu",
+      "calendar"
+    ]
+  },
+  "security_considerations": [
+    "Todas las rutas de dashboard y estudiante protegidas por middleware",
+    "Server Actions validan autenticación y autorización",
+    "Passwords hasheados con bcryptjs (salt rounds: 10)",
+    "Validación de inputs con Zod en cliente y servidor",
+    "CSRF protection automático con Server Actions",
+    "Uploads limitados a PDFs con tamaño máximo 16MB",
+    "Variables sensibles en .env.local (nunca en código)",
+    "Rate limiting recomendado en producción",
+    "Sanitización de MongoDB queries (Mongoose previene injection)"
+  ],
+  "performance_optimizations": [
+    "Landing page: Static rendering (build time)",
+    "Dashboard: Dynamic rendering con data caching",
+    "Server Components por defecto (menos JavaScript al cliente)",
+    "next/image para optimización automática de imágenes",
+    "next/font para preload automático de fuentes",
+    "Lazy loading de componentes pesados (React.lazy + Suspense)",
+    "Server Actions eliminan necesidad de API Routes (menos overhead)",
+    "Mongoose lean() para queries read-only (mejor performance)",
+    "Revalidación selectiva con revalidatePath (no full page reload)"
+  ],
+  "scalability_considerations": [
+    "Estructura feature-based facilita agregar nuevos módulos",
+    "Server Actions separadas permiten escalar lógica de negocio",
+    "Modelos MongoDB diseñados para expansión futura",
+    "Validaciones Zod reutilizables y componibles",
+    "Sistema de roles extensible (agregar 'teacher', 'coordinator', etc.)",
+    "UploadThing maneja escalado de almacenamiento",
+    "Next.js permite migrar a Middleware/Edge Runtime si necesario",
+    "MongoDB Atlas escala automáticamente"
+  ]
+}

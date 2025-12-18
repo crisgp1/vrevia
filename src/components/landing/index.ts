@@ -1,0 +1,6 @@
+export { Navbar } from "./navbar"
+export { Hero } from "./hero"
+export { Methodology } from "./methodology"
+export { Levels } from "./levels"
+export { Contact } from "./contact"
+export { Footer } from "./footer"
