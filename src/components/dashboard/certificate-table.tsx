@@ -59,6 +59,16 @@ export function CertificateTable({ certificates }: CertificateTableProps) {
     }
   }
 
+  function handleDownload(id: string, certificateNumber: string) {
+    const link = document.createElement("a")
+    link.href = `/api/certificates/${id}/pdf`
+    link.download = `certificado-${certificateNumber}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    toast.success("Descargando certificado...")
+  }
+
   if (certificates.length === 0) {
     return (
       <div className="text-center py-12 border rounded-lg bg-muted/20">
@@ -113,7 +123,11 @@ export function CertificateTable({ certificates }: CertificateTableProps) {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" size="sm" disabled>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDownload(cert.id, cert.certificateNumber)}
+                  >
                     <Download className="h-4 w-4 mr-1" />
                     Descargar
                   </Button>
