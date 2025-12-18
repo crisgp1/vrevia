@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-import { UploadButton } from "@uploadthing/react"
 import { Button } from "@/components/ui/button"
+import { FileUpload } from "@/components/ui/file-upload"
 import {
   Dialog,
   DialogContent,
@@ -36,7 +36,6 @@ import { createAssignmentSchema } from "@/lib/validations/assignment"
 import { createAssignment, updateAssignment } from "@/lib/actions/assignments"
 import { LEVELS, LEVEL_DETAILS, getLessonsByLevel } from "@/lib/constants"
 import type { CreateAssignmentInput } from "@/lib/validations/assignment"
-import type { OurFileRouter } from "@/lib/uploadthing"
 import { Plus, FileText, X, Edit2 } from "lucide-react"
 
 interface Assignment {
@@ -294,25 +293,14 @@ export function AssignmentForm({ groups, students, assignment, trigger }: Assign
                 </div>
               ) : (
                 <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 hover:border-muted-foreground/50 transition-colors">
-                  <UploadButton<OurFileRouter, "assignmentUploader">
-                    endpoint="assignmentUploader"
-                    onClientUploadComplete={(res) => {
-                      if (res?.[0]) {
-                        setUploadedFile({
-                          url: res[0].ufsUrl,
-                          name: res[0].name,
-                        })
-                        toast.success("Archivo subido exitosamente")
-                      }
-                    }}
-                    onUploadError={(error: Error) => {
-                      toast.error(`Error al subir: ${error.message}`)
-                    }}
-                    appearance={{
-                      button:
-                        "bg-secondary text-secondary-foreground hover:bg-secondary/90 ut-ready:bg-secondary ut-uploading:cursor-not-allowed rounded-md px-4 py-2 text-sm font-medium transition-colors",
-                      container: "w-full flex justify-center",
-                      allowedContent: "text-muted-foreground text-xs mt-2",
+                  <FileUpload
+                    folder="assignments"
+                    buttonVariant="secondary"
+                    onUploadComplete={(file) => {
+                      setUploadedFile({
+                        url: file.url,
+                        name: file.name,
+                      })
                     }}
                   />
                 </div>

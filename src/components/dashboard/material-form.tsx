@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-import { UploadButton } from "@uploadthing/react"
 import { Button } from "@/components/ui/button"
+import { FileUpload } from "@/components/ui/file-upload"
 import {
   Dialog,
   DialogContent,
@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/select"
 import { createMaterial } from "@/lib/actions/materials"
 import { LEVELS, LEVEL_DETAILS, getLesson } from "@/lib/constants"
-import type { OurFileRouter } from "@/lib/uploadthing"
 import { Plus, FileText, X } from "lucide-react"
 import { z } from "zod"
 
@@ -203,27 +202,16 @@ export function MaterialForm({ groups, students }: MaterialFormProps) {
                 </div>
               ) : (
                 <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 hover:border-muted-foreground/50 transition-colors">
-                  <UploadButton<OurFileRouter, "materialUploader">
-                    endpoint="materialUploader"
-                    onClientUploadComplete={(res) => {
-                      if (res?.[0]) {
-                        setUploadedFile({
-                          url: res[0].ufsUrl,
-                          name: res[0].name,
-                        })
-                        form.setValue("fileUrl", res[0].ufsUrl)
-                        form.setValue("fileName", res[0].name)
-                        toast.success("Archivo subido exitosamente")
-                      }
-                    }}
-                    onUploadError={(error: Error) => {
-                      toast.error(`Error al subir: ${error.message}`)
-                    }}
-                    appearance={{
-                      button:
-                        "bg-primary text-primary-foreground hover:bg-primary/90 ut-ready:bg-primary ut-uploading:cursor-not-allowed rounded-md px-4 py-2 text-sm font-medium transition-colors",
-                      container: "w-full flex justify-center",
-                      allowedContent: "text-muted-foreground text-xs mt-2",
+                  <FileUpload
+                    folder="materials"
+                    buttonVariant="default"
+                    onUploadComplete={(file) => {
+                      setUploadedFile({
+                        url: file.url,
+                        name: file.name,
+                      })
+                      form.setValue("fileUrl", file.url)
+                      form.setValue("fileName", file.name)
                     }}
                   />
                 </div>
