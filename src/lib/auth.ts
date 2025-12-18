@@ -38,30 +38,44 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     const email = clerkUser.emailAddresses[0]?.emailAddress
     const name = [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || "Usuario"
 
-    // Check if this is the first user (make them admin)
-    const userCount = await User.countDocuments()
+    // Check if user exists by email (might have been created manually)
+    user = await User.findOne({ email })
 
-    const newUser = await User.create({
-      clerkId: clerkUser.id,
-      email,
-      name,
-      role: userCount === 0 ? "admin" : "student",
-      isActive: true,
-    })
+    if (user) {
+      // User exists with this email, update their clerkId
+      user.clerkId = clerkUser.id
+      user.name = name
+      await user.save()
+    } else {
+      // Check if this is the first user (make them admin)
+      const userCount = await User.countDocuments()
+
+      const newUser = await User.create({
+        clerkId: clerkUser.id,
+        email,
+        name,
+        role: userCount === 0 ? "admin" : "student",
+        isActive: true,
+      })
+
+      user = newUser
+    }
+
+    const finalUser = user!
 
     return {
-      id: newUser._id.toString(),
-      clerkId: newUser.clerkId,
-      email: newUser.email,
-      name: newUser.name,
-      role: newUser.role,
-      phone: newUser.phone,
-      level: newUser.level,
-      currentLesson: newUser.currentLesson || 1,
-      group: newUser.group?.toString(),
-      classType: newUser.classType,
-      startDate: newUser.startDate,
-      isActive: newUser.isActive,
+      id: finalUser._id.toString(),
+      clerkId: finalUser.clerkId,
+      email: finalUser.email,
+      name: finalUser.name,
+      role: finalUser.role,
+      phone: finalUser.phone,
+      level: finalUser.level,
+      currentLesson: finalUser.currentLesson || 1,
+      group: finalUser.group?.toString(),
+      classType: finalUser.classType,
+      startDate: finalUser.startDate,
+      isActive: finalUser.isActive,
     }
   }
 
@@ -123,7 +137,12 @@ export async function syncClerkUser(clerkUser: {
   const email = clerkUser.emailAddresses[0]?.emailAddress
   const name = [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || "Usuario"
 
-  let user = await User.findOne({ clerkId: clerkUser.id })
+  let user = await User.findOne({
+    $or: [
+      { clerkId: clerkUser.id },
+      { email }
+    ]
+  })
 
   if (!user) {
     // Check if this is the first user (make them admin)
@@ -137,7 +156,8 @@ export async function syncClerkUser(clerkUser: {
       isActive: true,
     })
   } else {
-    // Update email/name if changed
+    // Update clerkId, email, and name if changed
+    user.clerkId = clerkUser.id
     user.email = email
     user.name = name
     await user.save()
