@@ -7,6 +7,7 @@ export async function POST(request: NextRequest) {
     const { userId } = await auth()
 
     if (!userId) {
+      console.error("Upload attempt without authentication")
       return NextResponse.json({ error: "No autenticado" }, { status: 401 })
     }
 
@@ -14,12 +15,23 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File
 
     if (!file) {
+      console.error("No file provided in upload request")
       return NextResponse.json({ error: "No se proporcionó archivo" }, { status: 400 })
     }
 
+    console.log("Upload attempt:", {
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      userId
+    })
+
     // Validate file type (PDFs only)
     if (file.type !== "application/pdf") {
-      return NextResponse.json({ error: "Solo se permiten archivos PDF" }, { status: 400 })
+      console.error("Invalid file type:", file.type)
+      return NextResponse.json({
+        error: `Solo se permiten archivos PDF. Tipo recibido: ${file.type}`
+      }, { status: 400 })
     }
 
     // Validate file size (max 10MB)
@@ -39,6 +51,8 @@ export async function POST(request: NextRequest) {
       addRandomSuffix: false,
     })
 
+    console.log("Upload successful:", { url: blob.url, pathname })
+
     return NextResponse.json({
       url: blob.url,
       name: file.name,
@@ -46,8 +60,9 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Upload error:", error)
+    const errorMessage = error instanceof Error ? error.message : "Error desconocido"
     return NextResponse.json(
-      { error: "Error al subir el archivo" },
+      { error: `Error al subir el archivo: ${errorMessage}` },
       { status: 500 }
     )
   }
