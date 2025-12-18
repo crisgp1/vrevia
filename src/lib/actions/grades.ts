@@ -12,6 +12,7 @@ interface GradeInput {
   score: number
   maxScore?: number
   notes?: string
+  isExtraordinary?: boolean
 }
 
 export async function addGrade(data: GradeInput): Promise<{ success: boolean; error?: string }> {
@@ -28,6 +29,13 @@ export async function addGrade(data: GradeInput): Promise<{ success: boolean; er
 
     if (existing) {
       // Update existing grade
+      if (data.isExtraordinary) {
+        // Save original grade info before updating
+        existing.originalScore = existing.score
+        existing.originalGradedBy = existing.gradedBy
+        existing.originalGradedAt = existing.updatedAt
+        existing.isExtraordinary = true
+      }
       existing.score = data.score
       existing.maxScore = data.maxScore || 100
       existing.notes = data.notes
@@ -59,18 +67,27 @@ export async function getStudentGrades(studentId: string) {
   await connectDB()
 
   const grades = await Grade.find({ student: studentId })
+    .populate("originalGradedBy", "name")
     .sort({ lesson: 1 })
     .lean()
 
-  return grades.map((g) => ({
-    id: g._id.toString(),
-    lesson: g.lesson,
-    type: g.type,
-    score: g.score,
-    maxScore: g.maxScore,
-    notes: g.notes,
-    createdAt: g.createdAt,
-  }))
+  return grades.map((g) => {
+    const originalGradedBy = g.originalGradedBy as unknown as { name: string } | null
+
+    return {
+      id: g._id.toString(),
+      lesson: g.lesson,
+      type: g.type,
+      score: g.score,
+      maxScore: g.maxScore,
+      notes: g.notes,
+      isExtraordinary: g.isExtraordinary || false,
+      originalScore: g.originalScore,
+      originalGradedBy: originalGradedBy?.name,
+      originalGradedAt: g.originalGradedAt,
+      createdAt: g.createdAt,
+    }
+  })
 }
 
 export async function getGroupGrades(groupId: string) {

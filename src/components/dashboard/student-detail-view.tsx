@@ -45,7 +45,9 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
+  Pencil,
 } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
 import { LEVELS, CLASS_TYPES, LEVEL_DETAILS, getLesson, CURRICULUM } from "@/lib/constants"
 import { advanceStudentLesson, setStudentLesson, updateStudent } from "@/lib/actions/users"
 import { addGrade } from "@/lib/actions/grades"
@@ -72,6 +74,10 @@ interface Grade {
   score: number
   maxScore: number
   notes?: string
+  isExtraordinary: boolean
+  originalScore?: number
+  originalGradedBy?: string
+  originalGradedAt?: Date
   createdAt: Date
 }
 
@@ -115,6 +121,7 @@ export function StudentDetailView({ student, grades, attendance, groups }: Stude
   // Grade form state
   const [gradeScore, setGradeScore] = useState("")
   const [gradeType, setGradeType] = useState<"class" | "assessment" | "final">("class")
+  const [isExtraordinary, setIsExtraordinary] = useState(false)
 
   // Attendance form state
   const [attendanceLesson, setAttendanceLesson] = useState(student.currentLesson.toString())
@@ -204,6 +211,7 @@ export function StudentDetailView({ student, grades, attendance, groups }: Stude
         lesson: student.currentLesson,
         type: gradeType,
         score,
+        isExtraordinary,
       })
 
       if (result.error) {
@@ -211,9 +219,10 @@ export function StudentDetailView({ student, grades, attendance, groups }: Stude
         return
       }
 
-      toast.success("Calificación guardada")
+      toast.success(isExtraordinary ? "Calificación extraordinaria guardada" : "Calificación guardada")
       setGradeDialogOpen(false)
       setGradeScore("")
+      setIsExtraordinary(false)
       router.refresh()
     } catch {
       toast.error("Error al guardar calificación")
@@ -427,9 +436,21 @@ export function StudentDetailView({ student, grades, attendance, groups }: Stude
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <span className={`font-medium ${grade.score >= 70 ? "text-green-600" : "text-red-600"}`}>
-                        {grade.score}/{grade.maxScore}
-                      </span>
+                      {grade.isExtraordinary && grade.originalScore !== undefined ? (
+                        <div className="flex items-center gap-2">
+                          <span className="line-through text-muted-foreground text-sm">
+                            {grade.originalScore}/{grade.maxScore}
+                          </span>
+                          <Pencil className="h-3 w-3 text-muted-foreground" />
+                          <span className={`font-medium ${grade.score >= 70 ? "text-green-600" : "text-red-600"}`}>
+                            {grade.score}/{grade.maxScore}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className={`font-medium ${grade.score >= 70 ? "text-green-600" : "text-red-600"}`}>
+                          {grade.score}/{grade.maxScore}
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {new Date(grade.createdAt).toLocaleDateString("es-MX")}
@@ -645,6 +666,19 @@ export function StudentDetailView({ student, grades, attendance, groups }: Stude
                 onChange={(e) => setGradeScore(e.target.value)}
                 placeholder="85"
               />
+            </div>
+            <div className="flex items-center space-x-2 p-3 bg-muted/50 rounded-lg">
+              <Checkbox
+                id="extraordinary"
+                checked={isExtraordinary}
+                onCheckedChange={(checked) => setIsExtraordinary(checked === true)}
+              />
+              <label
+                htmlFor="extraordinary"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Calificación extraordinaria (reemplaza la anterior)
+              </label>
             </div>
           </div>
           <DialogFooter>

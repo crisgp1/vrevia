@@ -9,6 +9,11 @@ export interface IGrade extends Document {
   maxScore: number
   notes?: string
   gradedBy: mongoose.Types.ObjectId
+  // Extraordinary grade support
+  isExtraordinary: boolean
+  originalScore?: number
+  originalGradedBy?: mongoose.Types.ObjectId
+  originalGradedAt?: Date
   createdAt: Date
   updatedAt: Date
 }
@@ -49,6 +54,21 @@ const GradeSchema = new Schema<IGrade>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    isExtraordinary: {
+      type: Boolean,
+      default: false,
+    },
+    originalScore: {
+      type: Number,
+      min: 0,
+    },
+    originalGradedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    originalGradedAt: {
+      type: Date,
     },
   },
   {
