@@ -11,6 +11,7 @@ import {
 } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
+import { PortalButton } from "@/components/portal-button"
 import { Menu } from "lucide-react"
 
 const navLinks = [
@@ -56,6 +57,7 @@ export function Navbar() {
             </SignUpButton>
           </SignedOut>
           <SignedIn>
+            <PortalButton />
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
         </div>
@@ -93,7 +95,8 @@ export function Navbar() {
                   </SignUpButton>
                 </SignedOut>
                 <SignedIn>
-                  <div className="flex items-center gap-3">
+                  <PortalButton className="w-full" />
+                  <div className="flex items-center gap-3 mt-4">
                     <UserButton afterSignOutUrl="/" />
                     <span className="text-sm text-muted-foreground">Mi cuenta</span>
                   </div>
