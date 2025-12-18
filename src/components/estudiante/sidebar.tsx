@@ -14,6 +14,7 @@ import {
   CreditCard,
   Menu,
   GraduationCap,
+  Medal,
 } from "lucide-react"
 import { useState } from "react"
 
@@ -23,6 +24,7 @@ const navItems = [
   { href: "/estudiante/materiales", label: "Mis materiales", icon: FileText },
   { href: "/estudiante/tareas", label: "Mis tareas", icon: ClipboardList },
   { href: "/estudiante/calificaciones", label: "Calificaciones", icon: Award },
+  { href: "/estudiante/certificados", label: "Certificados", icon: Medal },
   { href: "/estudiante/pagos", label: "Mis pagos", icon: CreditCard },
 ]
 

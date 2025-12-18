@@ -13,6 +13,7 @@ import {
   FileText,
   ClipboardList,
   CreditCard,
+  Award,
   Menu,
 } from "lucide-react"
 import { useState } from "react"
@@ -24,6 +25,7 @@ const navItems = [
   { href: "/dashboard/materiales", label: "Materiales", icon: FileText },
   { href: "/dashboard/tareas", label: "Tareas", icon: ClipboardList },
   { href: "/dashboard/pagos", label: "Pagos", icon: CreditCard },
+  { href: "/dashboard/certificados", label: "Certificados", icon: Award },
 ]
 
 function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
