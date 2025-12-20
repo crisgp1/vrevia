@@ -7,6 +7,12 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {
   Home,
   FileText,
   ClipboardList,
@@ -15,8 +21,12 @@ import {
   Menu,
   GraduationCap,
   Medal,
+  Copy,
+  Check,
+  Info,
 } from "lucide-react"
 import { useState } from "react"
+import type { CurrentUser } from "@/lib/auth"
 
 const navItems = [
   { href: "/estudiante", label: "Inicio", icon: Home },
@@ -28,8 +38,17 @@ const navItems = [
   { href: "/estudiante/pagos", label: "Mis pagos", icon: CreditCard },
 ]
 
-function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
+function SidebarContent({ onLinkClick, user }: { onLinkClick?: () => void; user: CurrentUser | null }) {
   const pathname = usePathname()
+  const [copied, setCopied] = useState(false)
+
+  const copyClerkId = () => {
+    if (user?.clerkId) {
+      navigator.clipboard.writeText(user.clerkId)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
 
   return (
     <div className="flex h-full flex-col bg-card border-r">
@@ -77,23 +96,49 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
               },
             }}
           />
-          <span className="text-sm font-medium text-muted-foreground">
-            Mi cuenta
-          </span>
         </div>
+        {user && (
+          <div className="mt-2 px-3">
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-xs text-muted-foreground">Clerk ID</p>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-3 w-3 text-muted-foreground/60 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-[200px]">
+                    <p className="text-xs">Identificador único para soporte técnico. Compártelo si necesitas ayuda.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <button
+              onClick={copyClerkId}
+              className="flex items-center gap-2 text-xs text-foreground/80 hover:text-foreground bg-muted hover:bg-muted/80 px-2 py-1 rounded w-full transition-colors"
+              title="Clic para copiar"
+            >
+              <code className="flex-1 truncate text-left">{user.clerkId}</code>
+              {copied ? (
+                <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
+              ) : (
+                <Copy className="h-3 w-3 flex-shrink-0" />
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-export function StudentSidebar() {
+export function StudentSidebar({ user }: { user: CurrentUser | null }) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
       {/* Desktop Sidebar */}
       <aside className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
-        <SidebarContent />
+        <SidebarContent user={user} />
       </aside>
 
       {/* Mobile Sidebar */}
@@ -110,7 +155,7 @@ export function StudentSidebar() {
         </SheetTrigger>
         <SheetContent side="left" className="w-64 p-0">
           <SheetTitle className="sr-only">Menú de navegación</SheetTitle>
-          <SidebarContent onLinkClick={() => setIsOpen(false)} />
+          <SidebarContent user={user} onLinkClick={() => setIsOpen(false)} />
         </SheetContent>
       </Sheet>
     </>

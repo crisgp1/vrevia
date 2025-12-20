@@ -94,22 +94,25 @@ export default async function EstudiantePage() {
             <CardDescription>{levelDetails.subtitle}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="p-4 bg-primary/5 rounded-lg border-l-4 border-primary">
-              <div className="flex items-center gap-2 mb-2">
-                <Badge variant="default">Clase {currentLesson}</Badge>
-                <Badge variant="outline">{LEVELS[currentLevelKey]}</Badge>
-              </div>
-              <div className="grid md:grid-cols-2 gap-3 mt-3">
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">Gramática</p>
-                  <p className="font-medium">{currentLessonData.grammar}</p>
+            <Link href={`/estudiante/plan-estudios/clase/${currentLesson}`}>
+              <div className="p-5 bg-primary/5 rounded-lg border-l-4 border-primary hover:bg-primary/10 transition-all duration-200 hover:shadow-md cursor-pointer group">
+                <div className="flex items-center gap-2 mb-3">
+                  <Badge variant="default" className="text-sm py-1">Clase {currentLesson}</Badge>
+                  <Badge variant="outline">{LEVELS[currentLevelKey]}</Badge>
+                  <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                 </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide">Vocabulario</p>
-                  <p className="font-medium">{currentLessonData.vocabulary}</p>
+                <div className="grid md:grid-cols-2 gap-4 mt-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Gramática</p>
+                    <p className="font-semibold text-foreground">{currentLessonData.grammar}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Vocabulario</p>
+                    <p className="font-medium text-muted-foreground">{currentLessonData.vocabulary}</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </CardContent>
         </Card>
       )}
@@ -164,7 +167,7 @@ export default async function EstudiantePage() {
           </CardHeader>
           <CardContent>
             {pendingAssignments.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground py-4">
                 No tienes tareas pendientes
               </p>
             ) : (
@@ -173,11 +176,11 @@ export default async function EstudiantePage() {
                   <Link
                     key={assignment.id}
                     href="/estudiante/tareas"
-                    className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors"
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-all duration-200 hover:shadow-sm border border-transparent hover:border-border"
                   >
                     <div>
-                      <p className="text-sm font-medium">{assignment.title}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm font-semibold">{assignment.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         Vence: {formatShortDate(assignment.dueDate)}
                       </p>
                     </div>
@@ -187,7 +190,7 @@ export default async function EstudiantePage() {
                 {pendingAssignments.length > 3 && (
                   <Link
                     href="/estudiante/tareas"
-                    className="text-sm text-primary hover:underline"
+                    className="block text-sm text-primary hover:underline mt-4"
                   >
                     Ver todas ({pendingAssignments.length})
                   </Link>
@@ -205,7 +208,7 @@ export default async function EstudiantePage() {
           </CardHeader>
           <CardContent>
             {materials.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground py-4">
                 No hay materiales disponibles
               </p>
             ) : (
@@ -214,11 +217,11 @@ export default async function EstudiantePage() {
                   <Link
                     key={material.id}
                     href="/estudiante/materiales"
-                    className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors"
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-all duration-200 hover:shadow-sm border border-transparent hover:border-border"
                   >
                     <div>
-                      <p className="text-sm font-medium">{material.title}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm font-semibold">{material.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {formatShortDate(material.uploadedAt)}
                       </p>
                     </div>
@@ -228,7 +231,7 @@ export default async function EstudiantePage() {
                 {materials.length > 3 && (
                   <Link
                     href="/estudiante/materiales"
-                    className="text-sm text-primary hover:underline"
+                    className="block text-sm text-primary hover:underline mt-4"
                   >
                     Ver todos ({materials.length})
                   </Link>
