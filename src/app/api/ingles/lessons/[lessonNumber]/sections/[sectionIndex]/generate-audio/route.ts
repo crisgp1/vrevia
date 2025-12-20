@@ -5,12 +5,18 @@ import { EnglishLesson } from "@/lib/db/models"
 import { connectDB } from "@/lib/db/connection"
 import { auth } from "@clerk/nextjs/server"
 
-const elevenlabs = new ElevenLabsClient({
-  apiKey: process.env.ELEVENLABS_API_KEY,
-})
-
 // Voz en español (Rachel - calidad alta, natural)
 const VOICE_ID = "21m00Tcm4TlvDq8ikWAM" // Rachel voice
+
+// Lazy initialization to avoid build-time errors
+function getElevenLabsClient() {
+  if (!process.env.ELEVENLABS_API_KEY) {
+    throw new Error("ELEVENLABS_API_KEY no está configurada")
+  }
+  return new ElevenLabsClient({
+    apiKey: process.env.ELEVENLABS_API_KEY,
+  })
+}
 
 export async function POST(
   req: NextRequest,
@@ -55,6 +61,7 @@ export async function POST(
     // Generate audio with ElevenLabs
     console.log(`Generando audio para lección ${lessonNum}, sección ${sectionIdx}...`)
 
+    const elevenlabs = getElevenLabsClient()
     const audio = await elevenlabs.textToSpeech.convert(VOICE_ID, {
       text: section.content,
       modelId: "eleven_multilingual_v2", // Soporta español
